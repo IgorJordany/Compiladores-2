@@ -59,8 +59,8 @@ def trataComentarioB():
 	else:
 		return False
 
-arqC = open('codigo.txt','r')
-#arqT = open('tokens.txt','w')
+arqC = open('codigo.igor','r')
+#arqT = open('tokens.igor','w')
 texto = arqC.read()
 indice = 0
 espacos = 0
