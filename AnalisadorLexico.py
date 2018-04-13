@@ -59,9 +59,44 @@ def trataComentarioB():
 	else:
 		return False
 
-arqC = open('codigo.igor','r')
-#arqT = open('tokens.igor','w')
+def trataIdentificador():
+	global indice, letra, digito, buf
+	if getCaracter() in letra:
+		buf = buf + getCaracter()
+		indice += 1
+		while getCaracter() in letra:
+			buf = buf + getCaracter()
+			indice += 1
+		if getCaracter() not in letra:
+			if buf in pReservadas:
+				print("saporra é palavra reservada")
+				print(buf)
+				buf = ""
+			else:
+				print("saporra é identificadorA")
+				print(buf)
+				buf = ""
+		if getCaracter() in digito:
+			buf = buf + getCaracter()
+			indice += 1
+			while getCaracter() in letra or getCaracter() in digito:
+				buf = buf + getCaracter()
+				indice += 1
+				if getCaracter() not in letra or getCaracter() not in digito:
+					print("saporra é identificadorB")
+					print(buf)
+					buf = ""
+	else:
+		return False
+
+
+arqC = open('codigo.ij','r')
+#arqT = open('tokens.ij','w')
 texto = arqC.read()
+letra = ['a','A','b','B','c','C','d','D','e','E','f','F','g','G','h','H','i','I','j','J','k','K','l','L','m','M','n','N','o','O','p','P','q','Q','r','R','s','S','t','T','u','U','v','V','x','X','w','W','y','Y','z','Z']
+pReservadas = ['if','then','while','do','write','read','else','begin','end']
+digito = ['0','1','2','3','4','5','6','7','8','9']
+buf = ""
 indice = 0
 espacos = 0
 linha = 1
@@ -69,8 +104,7 @@ linha = 1
 while indice < len(texto):
 	trataComentarioA()
 	trataComentarioB()
+	trataIdentificador()
 
-print(espacos)
-print(len(texto)-espacos)
 arqC.close()
 #arqT.close()
