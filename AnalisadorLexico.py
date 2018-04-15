@@ -4,15 +4,7 @@
 def getCaracter():
 	global indice, texto, linha, espacos
 	if indice < len(texto):
-		while texto[indice] == ' ':
-			indice += 1
-			espacos += 1
-		if texto[indice] == '\n':
-			linha += 1
-			indice += 1
 		return texto[indice]
-	elif indice == len(texto):
-		return "$"
 	else:
 		return False
 
@@ -22,16 +14,18 @@ def ignoraComentarioA():
 		indice += 1
 
 def trataComentarioA():
-	global indice
+	global indice, tokens, linha
 	if getCaracter() == '/':
 		indice += 1
 		if getCaracter() == '*':
 			indice += 1
-			print("comecou comentario A")
+			print("----Início comentário A")
 			ignoraComentarioA()
 			fimComentarioA()
 		else:
-			print("A0 - Reconhece simbolo simples")
+			print("----Símbolo simples")
+			tokens.append(str(linha) + " sSimples " + getCaracter() + '\n')
+			return True
 	else:
 		return False
 
@@ -41,7 +35,8 @@ def fimComentarioA():
 		indice += 1
 		if getCaracter() == '/':
 			indice += 1
-			print("acabou comentario A")
+			print("----Fim comentário A")
+			return True
 		else:
 			ignoraComentarioA()
 			fimComentarioA()
@@ -50,17 +45,18 @@ def trataComentarioB():
 	global indice
 	if getCaracter() == '{':
 		indice += 1
-		print("comecou comentario B")
+		print("----Início comentário B")
 		while getCaracter() != '}':
 			indice += 1
 		if getCaracter() == '}':
 			indice += 1
-			print("acabou comentario B")
+			print("----Fim comentário B")
+			return True
 	else:
 		return False
 
 def trataIdentificador():
-	global indice, letra, digito, buf
+	global indice, letra, digito, buf, tokens, linha
 	if getCaracter() in letra:
 		buf = buf + getCaracter()
 		indice += 1
@@ -69,13 +65,17 @@ def trataIdentificador():
 			indice += 1
 		if getCaracter() not in letra:
 			if buf in pReservadas:
-				print("saporra é palavra reservada")
+				print("----Palavra reservada")
 				print(buf)
+				tokens.append(str(linha) + " pReservada " + buf + '\n')
 				buf = ""
+				return True
 			else:
-				print("saporra é identificadorA")
+				print("----IdentificadorA")
 				print(buf)
+				tokens.append(str(linha) + " identificador " + buf + '\n')
 				buf = ""
+				return True
 		if getCaracter() in digito:
 			buf = buf + getCaracter()
 			indice += 1
@@ -83,28 +83,140 @@ def trataIdentificador():
 				buf = buf + getCaracter()
 				indice += 1
 				if getCaracter() not in letra or getCaracter() not in digito:
-					print("saporra é identificadorB")
+					print("----Identificador")
 					print(buf)
+					tokens.append(str(linha) + " identificador " + buf + '\n')
 					buf = ""
+					return True
 	else:
 		return False
 
+def trataSimboloDuploeSimples():
+	global indice, linha, tokens
+	if getCaracter() in simbolo:
+		if getCaracter() == ':':
+			indice += 1
+			if getCaracter() in simbolo:
+				if getCaracter() == '=':
+					print("----Símbolo duplo")
+					print(":=")
+					tokens.append(str(linha) + " sDuplo " + ":=" + '\n')
+					indice += 1
+					return True
+		elif getCaracter() == '<':
+			indice += 1
+			if getCaracter() in simbolo:
+				if getCaracter() == '=':
+					print("----Símbolo duplo")
+					print("<=")
+					tokens.append(str(linha) + " sDuplo " + "<=" + '\n')
+					indice += 1
+					return True
+				elif getCaracter() == '>':
+					print("----Símbolo duplo")
+					print("<>")
+					tokens.append(str(linha) + " sDuplo " + "<>" + '\n')
+					indice += 1
+					return True
+		elif getCaracter() == '>':
+			indice += 1
+			if getCaracter() in simbolo:
+				if getCaracter() == '=': 
+					print("----Símbolo duplo")
+					print(">=")
+					tokens.append(str(linha) + " sDuplo " + ">=" + '\n')
+					indice += 1
+					return True
+		else:
+			print("----Símbolo simples")
+			print(getCaracter())
+			tokens.append(str(linha) + " sSimples " + getCaracter() + '\n')
+			indice += 1
+			return True
+	else:
+		return False
+
+def trataNumeroInteiroReal():
+	global indice, digito, buffNumero, linha, tokens
+	if getCaracter() in digito:
+		buffNumero = buffNumero + getCaracter()
+		indice += 1
+		while getCaracter() in digito:
+			buffNumero = buffNumero + getCaracter()
+			indice += 1
+		if getCaracter() == '.':
+			buffNumero = buffNumero + getCaracter()
+			indice += 1
+			if getCaracter() in digito:
+				buffNumero = buffNumero + getCaracter()
+				indice += 1
+				while getCaracter() in digito:
+					buffNumero = buffNumero + getCaracter()
+					indice += 1
+				if getCaracter() not in digito:
+					print("----Número real")
+					print(buffNumero)
+					tokens.append(str(linha) + " nReal " + buffNumero + '\n')
+					buffNumero = ""
+					return True
+			else:
+				print("----Erro léxico não se pode ter real sem número após o ponto, na linha " + str(linha))
+				print(buffNumero)
+				buffNumero = ""
+				return True
+		elif getCaracter() not in digito:
+			print("----Número inteiro")
+			print(buffNumero)
+			tokens.append(str(linha) + " nInteger " + buffNumero + '\n')
+			buffNumero = ""
+			return True
+	else:
+		return False
+
+def consomeEspacos():
+	global indice, linha
+	if indice < len(texto):
+		while getCaracter() == ' ':
+			indice += 1
+			return True
+		while getCaracter() == '\n':
+			linha += 1
+			indice += 1
+			return True
+		while getCaracter() == '\t':
+			indice += 1
+			return True
+	else:
+		return False
+
+def analisadorLexico():
+	global tokens, arqT
+	while indice < len(texto):
+		retorno1 = trataComentarioA()
+		retorno2 = trataComentarioB()
+		retorno3 = trataIdentificador()
+		retorno4 = trataSimboloDuploeSimples()
+		retorno5 = trataNumeroInteiroReal()
+		retorno6 = consomeEspacos()
+		if (retorno1 or retorno2 or retorno3 or retorno4 or retorno5 or retorno6) != True:
+			print("----Erro léxico caracter não permitido para linguagem na linha " + str(linha))
+			return False
+	arqT.writelines(tokens)
 
 arqC = open('codigo.ij','r')
-#arqT = open('tokens.ij','w')
+arqT = open('tokens.ij','w')
 texto = arqC.read()
 letra = ['a','A','b','B','c','C','d','D','e','E','f','F','g','G','h','H','i','I','j','J','k','K','l','L','m','M','n','N','o','O','p','P','q','Q','r','R','s','S','t','T','u','U','v','V','x','X','w','W','y','Y','z','Z']
-pReservadas = ['if','then','while','do','write','read','else','begin','end']
+pReservadas = ['if','then','while','do','write','read','else','begin','end','integer','real','var']
 digito = ['0','1','2','3','4','5','6','7','8','9']
+simbolo = ['(',')','*','+','-',':','=','<','>','.',',',';']
+tokens = []
 buf = ""
+buffNumero = ""
 indice = 0
-espacos = 0
 linha = 1
 
-while indice < len(texto):
-	trataComentarioA()
-	trataComentarioB()
-	trataIdentificador()
+analisadorLexico()
 
 arqC.close()
-#arqT.close()
+arqT.close()
