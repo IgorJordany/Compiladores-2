@@ -60,7 +60,7 @@ def trataIdentificador():
 	if getCaracter() in letra:
 		buf = buf + getCaracter()
 		indice += 1
-		while getCaracter() in letra:
+		while getCaracter() in letra or getCaracter() in digito:
 			buf = buf + getCaracter()
 			indice += 1
 		if getCaracter() not in letra:
@@ -199,15 +199,16 @@ def analisadorLexico():
 		retorno5 = trataNumeroInteiroReal()
 		retorno6 = consomeEspacos()
 		if (retorno1 or retorno2 or retorno3 or retorno4 or retorno5 or retorno6) != True:
-			print("----Erro léxico caracter não permitido para linguagem na linha " + str(linha))
+			print("----Erro léxico caracter não permitido para linguagem na linha " + str(linha) + " " + getCaracter())
 			return False
+
 	arqT.writelines(tokens)
 
 arqC = open('codigo.ij','r')
 arqT = open('tokens.ij','w')
 texto = arqC.read()
-letra = ['a','A','b','B','c','C','d','D','e','E','f','F','g','G','h','H','i','I','j','J','k','K','l','L','m','M','n','N','o','O','p','P','q','Q','r','R','s','S','t','T','u','U','v','V','x','X','w','W','y','Y','z','Z']
-pReservadas = ['if','then','while','do','write','read','else','begin','end','integer','real','var']
+letra = ['$','a','A','b','B','c','C','d','D','e','E','f','F','g','G','h','H','i','I','j','J','k','K','l','L','m','M','n','N','o','O','p','P','q','Q','r','R','s','S','t','T','u','U','v','V','x','X','w','W','y','Y','z','Z']
+pReservadas = ['if','then','while','do','write','read','else','begin','end','integer','real','var','$','procedure','program']
 digito = ['0','1','2','3','4','5','6','7','8','9']
 simbolo = ['(',')','*','+','-',':','=','<','>','.',',',';']
 tokens = []
