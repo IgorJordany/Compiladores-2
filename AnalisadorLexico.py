@@ -24,7 +24,7 @@ def trataComentarioA():
 			fimComentarioA()
 		else:
 			print("----Símbolo simples")
-			tokens.append(str(linha) + " sSimples " + getCaracter() + '\n')
+			tokens.append(str(linha) + " sSimples " + getCaracter())
 			return True
 	else:
 		return False
@@ -67,13 +67,13 @@ def trataIdentificador():
 			if buf in pReservadas:
 				print("----Palavra reservada")
 				print(buf)
-				tokens.append(str(linha) + " pReservada " + buf + '\n')
+				tokens.append(str(linha) + " pReservada " + buf)
 				buf = ""
 				return True
 			else:
 				print("----IdentificadorA")
 				print(buf)
-				tokens.append(str(linha) + " identificador " + buf + '\n')
+				tokens.append(str(linha) + " identificador " + buf)
 				buf = ""
 				return True
 		if getCaracter() in digito:
@@ -85,7 +85,7 @@ def trataIdentificador():
 				if getCaracter() not in letra or getCaracter() not in digito:
 					print("----Identificador")
 					print(buf)
-					tokens.append(str(linha) + " identificador " + buf + '\n')
+					tokens.append(str(linha) + " identificador " + buf)
 					buf = ""
 					return True
 	else:
@@ -100,7 +100,7 @@ def trataSimboloDuploeSimples():
 				if getCaracter() == '=':
 					print("----Símbolo duplo")
 					print(":=")
-					tokens.append(str(linha) + " sDuplo " + ":=" + '\n')
+					tokens.append(str(linha) + " sDuplo " + ":=")
 					indice += 1
 					return True
 		elif getCaracter() == '<':
@@ -109,13 +109,13 @@ def trataSimboloDuploeSimples():
 				if getCaracter() == '=':
 					print("----Símbolo duplo")
 					print("<=")
-					tokens.append(str(linha) + " sDuplo " + "<=" + '\n')
+					tokens.append(str(linha) + " sDuplo " + "<=")
 					indice += 1
 					return True
 				elif getCaracter() == '>':
 					print("----Símbolo duplo")
 					print("<>")
-					tokens.append(str(linha) + " sDuplo " + "<>" + '\n')
+					tokens.append(str(linha) + " sDuplo " + "<>")
 					indice += 1
 					return True
 		elif getCaracter() == '>':
@@ -124,13 +124,13 @@ def trataSimboloDuploeSimples():
 				if getCaracter() == '=': 
 					print("----Símbolo duplo")
 					print(">=")
-					tokens.append(str(linha) + " sDuplo " + ">=" + '\n')
+					tokens.append(str(linha) + " sDuplo " + ">=")
 					indice += 1
 					return True
 		else:
 			print("----Símbolo simples")
 			print(getCaracter())
-			tokens.append(str(linha) + " sSimples " + getCaracter() + '\n')
+			tokens.append(str(linha) + " sSimples " + getCaracter())
 			indice += 1
 			return True
 	else:
@@ -156,7 +156,7 @@ def trataNumeroInteiroReal():
 				if getCaracter() not in digito:
 					print("----Número real")
 					print(buffNumero)
-					tokens.append(str(linha) + " nReal " + buffNumero + '\n')
+					tokens.append(str(linha) + " nReal " + buffNumero)
 					buffNumero = ""
 					return True
 			else:
@@ -167,7 +167,7 @@ def trataNumeroInteiroReal():
 		elif getCaracter() not in digito:
 			print("----Número inteiro")
 			print(buffNumero)
-			tokens.append(str(linha) + " nInteger " + buffNumero + '\n')
+			tokens.append(str(linha) + " nInteger " + buffNumero)
 			buffNumero = ""
 			return True
 	else:
@@ -202,10 +202,10 @@ def analisadorLexico():
 			print("----Erro léxico caracter não permitido para linguagem na linha " + str(linha) + " " + getCaracter())
 			return False
 
-	arqT.writelines(tokens)
+#	arqT.writelines(tokens)
 
 arqC = open('codigo.ij','r')
-arqT = open('tokens.ij','w')
+#arqT = open('tokens.ij','w')
 texto = arqC.read()
 letra = ['$','a','A','b','B','c','C','d','D','e','E','f','F','g','G','h','H','i','I','j','J','k','K','l','L','m','M','n','N','o','O','p','P','q','Q','r','R','s','S','t','T','u','U','v','V','x','X','w','W','y','Y','z','Z']
 pReservadas = ['if','then','while','do','write','read','else','begin','end','integer','real','var','$','procedure','program']
@@ -220,4 +220,4 @@ linha = 1
 analisadorLexico()
 
 arqC.close()
-arqT.close()
+#arqT.close()
