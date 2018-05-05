@@ -25,21 +25,15 @@ def programa():
 		if token[1] == "identificador":
 			print("----OK-identificador")
 			token = proxToken()
-			if token[2] == ";":
-				print("----OK-;")
-				token = proxToken()
-				if corpo():
-					if token[2] == ".":
-						print("----OK-.")
-						return True
-					else:
-						print("----Erro-esperado-.")
-						return False
+			if corpo():
+				if token[2] == ".":
+					print("----OK-.")
+					return True
 				else:
-					print("----Errro-esperado-<corpo>")
+					print("----Erro-esperado-.")
 					return False
 			else:
-				print("----Erro-esperado-;")
+				print("----Errro-esperado-<corpo>")
 				return False
 		else:
 			print("----Erro-esperado-identificador")
@@ -130,11 +124,11 @@ def dc_v():
 def tipo_var():
 	global token
 	if token[2] == "real":
-		print("----OK-tipo-real")
+		print("----OK-número-real")
 		token = proxToken()
 		return True
 	elif token[2] == "integer":
-		print("----OK-tipo-inteiro")
+		print("----OK-número-inteiro")
 		token = proxToken()
 		return True
 	else:
