@@ -11,8 +11,8 @@ def proxToken():
 		return False
 
 def S():
-	if programa():
-		return True
+	if token[2] == "program":
+		programa()
 	else:
 		print("----Erro-esperado-<programa>")
 		return False
@@ -25,15 +25,21 @@ def programa():
 		if token[1] == "identificador":
 			print("----OK-identificador")
 			token = proxToken()
-			if corpo():
-				if token[2] == ".":
-					print("----OK-.")
-					return True
+			if token[2] == ";":
+				print("----OK-;")
+				token = proxToken()
+				if corpo():
+					if token[2] == ".":
+						print("----OK-.")
+						return True
+					else:
+						print("----Erro-esperado-.")
+						return False
 				else:
-					print("----Erro-esperado-.")
+					print("----Errro-esperado-<corpo>")
 					return False
 			else:
-				print("----Errro-esperado-<corpo>")
+				print("----Erro-esperado-;")
 				return False
 		else:
 			print("----Erro-esperado-identificador")
@@ -67,15 +73,17 @@ def corpo():
 
 def dc():
 	global token
-	if dc_v():
-		if mais_dc():
-			return True
+	if token[2] == "var":
+		dc_v()
+		if token[2] == ";":
+			mais_dc()
 		else:
 			print("----Erro-esperado-<mais_dc>")
 			return False
-	elif dc_p():
-		if mais_dc():
-			return True
+	elif token[2] == "procedure":
+		dc_p()
+		if token[2] == ";":
+			mais_dc()
 		else:
 			print("----Erro-esperado-<mais_dc>")
 			return False
@@ -102,12 +110,13 @@ def dc_v():
 	if token[2] == "var":
 		print("----OK-var")
 		token = proxToken()
-		if variaveis():
+		if token[1] == "identificador":
+			variaveis()
 			if token[2] == ":":
 				print("----OK-:")
 				token = proxToken()
-				if tipo_var():
-					return True
+				if token[2] == "real" or token[2] == "integer":
+					tipo_var()
 				else:
 					print("----Erro-esperado-<tipo_var>")
 					return False
@@ -124,11 +133,11 @@ def dc_v():
 def tipo_var():
 	global token
 	if token[2] == "real":
-		print("----OK-número-real")
+		print("----OK-tipo-real")
 		token = proxToken()
 		return True
 	elif token[2] == "integer":
-		print("----OK-número-inteiro")
+		print("----OK-tipo-inteiro")
 		token = proxToken()
 		return True
 	else:
@@ -140,11 +149,11 @@ def variaveis():
 	if token[1] == "identificador":
 		print("----OK-identificador")
 		token = proxToken()
-		if mais_var():
-			return True
+		if token[2] == ",":
+			mais_var()
 		else:
-			print("----Erro-esperado-<mais_var>")
-			return False
+			print("----OK-<mais_var>-vazio")
+			return True
 	else:
 		print("----Erro-esperado-identificador")
 		return False
@@ -154,8 +163,8 @@ def mais_var():
 	if token[2] == ",":
 		print("----OK-,")
 		token = proxToken()
-		if variaveis():
-			return True
+		if token[1] == "identificador":
+			variaveis()
 		else:
 			print("----Erro-esperado-<variaveis>")
 			return False
@@ -209,16 +218,19 @@ def parametros():
 
 def lista_par():
 	global token
-	if variaveis():
+	if token[1] == "identificador":
+		variaveis()
 		if token[2] == ":":
 			print("----OK-:")
 			token = proxToken()
-			if tipo_var():
-				if mais_par():
+			if token[2] == "real" or token[2] == "integer":
+				tipo_var()
+				if token[2] == ";":
+					mais_par()
 					return True
 				else:
-					print("----Erro-esperado-<mais_par>")
-					return False
+					print("----OK-<mais_par>-vazio")
+					return True
 			else:
 				print("----Erro-esperado-<tipo_var>")
 				return False
@@ -269,8 +281,10 @@ def corpo_p():
 
 def dc_loc():
 	global token
-	if dc_v():
-		if mais_dcloc():
+	if token[2] == "var":
+		dc_v()
+		if token[2] == ";":
+			mais_dcloc()
 			return True
 		else:
 			print("----Erro-esperado-<mais_dcloc>")
@@ -297,7 +311,8 @@ def lista_arg():
 	if token[2] == "(":
 		print("----OK-(")
 		token = proxToken()
-		if argumentos():
+		if token[1] == "identificador":
+			argumentos()
 			if token[2] == ")":
 				print("----OK-)")
 				token = proxToken()
@@ -317,7 +332,8 @@ def argumentos():
 	if token[1] == "identificador":
 		print("----OK-identificador")
 		token = proxToken()
-		if mais_ident():
+		if token[2] == ";":
+			mais_ident()
 			return True
 		else:
 			print("----Erro-esperado-<mais_ident>")
@@ -331,7 +347,8 @@ def mais_ident():
 	if token[2] == ";":
 		print("----OK-;")
 		token = proxToken()
-		if argumentos():
+		if token[1] == "identificador":
+			argumentos()
 			return True
 		else:
 			print("----Erro-esperado-<argumentos>")
@@ -356,12 +373,14 @@ def pfalsa():
 
 def comandos():
 	global token
-	if comando():
-		if mais_comandos():
+	if token[2] == "read" or token[2] == "write" or token[2] == "while" or token[2] == "if" or token[1] == "identificador":
+		comando()
+		if token[2] == ";":
+			mais_comandos()
 			return True
 		else:
-			print("----Erro-esperado-<mais_comandos>")
-			return False
+			print("----OK-<mais_comandos>-vazio")
+			return True
 	else:
 		print("----OK-<comandos>-vazio")
 		return True
@@ -388,7 +407,8 @@ def comando():
 		if token[2] == "(":
 			print("----OK-(")
 			token = proxToken()
-			if variaveis():
+			if token[1] == "identificador":
+				variaveis()
 				if token[2] == ")":
 					print("----OK-)")
 					token = proxToken()
@@ -408,7 +428,8 @@ def comando():
 		if token[2] == "(":
 			print("----OK-(")
 			token = proxToken()
-			if variaveis():
+			if token[1] == "identificador":
+				variaveis()
 				if token[2] == ")":
 					print("----OK-)")
 					token = proxToken()
@@ -425,59 +446,84 @@ def comando():
 	elif token[2] == "while":
 		print("----OK-while")
 		token = proxToken()
-		if condicao():
-			if token[2] == "do":
-				print("----OK-do")
-				token = proxToken()
-				if comandos():
-					if token[2] == "$":
-						print("----OK-$")
+		if token[2] == "(":
+			print("----OK-(")
+			token = proxToken()
+			if condicao():
+				if token[2] == "do":
+					print("----OK-do")
+					token = proxToken()
+					if token[2] == ")":
+						print("----OK-)")
 						token = proxToken()
-						return True
+						if comandos():
+							if token[2] == "$":
+								print("----OK-$")
+								token = proxToken()
+								return True
+							else:
+								print("----Erro-esperado-$")
+								return False
+						else:
+							print("----Erro-esperado-<comandos>")
+							return False
 					else:
-						print("----Erro-esperado-$")
+						print("----Erro-esperado-)")
 						return False
 				else:
-					print("----Erro-esperado-<comandos>")
+					print("----Erro-esperado-do")
 					return False
 			else:
-				print("----Erro-esperado-do")
+				print("----Erro-esperado-<condicao>")
 				return False
 		else:
-			print("----Erro-esperado-<condicao>")
+			print("----Erro-esperado-(")
 			return False
 	elif token[2] == "if":
 		print("----OK-if")
 		token = proxToken()
-		if condicao():
-			if token[2] == "then":
-				print("----OK-then")
-				token = proxToken()
-				if comandos():
-					if pfalsa():
-						if token[2] == "$":
-							print("----OK-$")
-							token = proxToken()
-							return True
+		if token[2] == "(":
+			print("----OK-(")
+			token = proxToken()
+			if condicao():
+				if token[2] == ")":
+					print("----OK-)")
+					token = proxToken()
+					if token[2] == "then":
+						print("----OK-then")
+						token = proxToken()
+						if comandos():
+							if pfalsa():
+								if token[2] == "$":
+									print("----OK-$")
+									token = proxToken()
+									return True
+								else:
+									print("----Erro-esperado-$")
+									return False
+							else:
+								print("----Erro-esperado-<pfalsa>")
+								return False
 						else:
-							print("----Erro-esperado-$")
+							print("----Erro-esperado-<pfalsa>")
 							return False
 					else:
-						print("----Erro-esperado-<pfalsa>")
+						print("----Erro-esperado-then")
 						return False
 				else:
-					print("----Erro-esperado-<pfalsa>")
+					print("----Erro-esperado-)")
 					return False
 			else:
-				print("----Erro-esperado-then")
+				print("----Erro-esperado-<condicao>")
 				return False
 		else:
-			print("----Erro-esperado-<condicao>")
+			print("----Erro-esperado-(")
 			return False
 	elif token[1] == "identificador":
 		print("----OK-identificador")
 		token = proxToken()
-		if restoIdent():
+		if token[2] == ":=":
+			restoIdent()
 			return True
 		else:
 			print("----Erro-esperado-<restoIdent>")
@@ -496,7 +542,8 @@ def restoIdent():
 		else:
 			print("---Erro-esperado-<expressao>")
 			return False
-	elif lista_arg():
+	elif token[2] == "(":
+		lista_arg()
 		return True
 	else:
 		print("----Erro-esperado-:=-ou-<lista_arg>")
@@ -505,7 +552,8 @@ def restoIdent():
 def condicao():
 	global token
 	if expressao():
-		if relacao():
+		if token[2] == "=" or token[2] == "<>" or token[2] == ">=" or token[2] == "<=" or token[2] == ">" or token[2] == "<":
+			relacao()
 			if expressao():
 				return True
 			else:
@@ -580,7 +628,8 @@ def op_un():
 
 def outros_termos():
 	global token
-	if op_ad():
+	if token[2] == "+" or token[2] == "-":
+		op_ad()
 		if termo():
 			if outros_termos():
 				return True
@@ -615,8 +664,8 @@ def termo():
 			if mais_fatores():
 				return True
 			else:
-				print("----Erro-esperado-<mais_fatores>")
-				return False
+				print("----OK-<mais_fatores>-vazio")
+				return True
 		else:
 			print("----Erro-esperado-<fator>")
 			return False
@@ -626,7 +675,8 @@ def termo():
 
 def mais_fatores():
 	global token
-	if op_mul():
+	if token[2] == "*" or token[2] == "/":
+		op_mul()
 		if fator():
 			if mais_fatores():
 				return True

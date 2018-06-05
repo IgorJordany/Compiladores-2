@@ -122,6 +122,10 @@ def trataSimboloDuploeSimples():
 					tokens.append(str(linha) + " sDuplo " + "<>")
 					indice += 1
 					return True
+			else:
+				print("----Símbolo simples")
+				print("<")
+				tokens.append(str(linha) + " sSimples " + "<")
 		elif getCaracter() == '>':
 			indice += 1
 			if getCaracter() in simbolo:
@@ -131,6 +135,10 @@ def trataSimboloDuploeSimples():
 					tokens.append(str(linha) + " sDuplo " + ">=")
 					indice += 1
 					return True
+			else:
+				print("----Símbolo simples")
+				print(">")
+				tokens.append(str(linha) + " sSimples " + ">")
 		else:
 			print("----Símbolo simples")
 			print(getCaracter())

@@ -66,10 +66,10 @@ def procuraPrint():
 	else:
 		return False		
 
-arqC = open('c.py','r')
+arqC = open('c.ij','r')
 texto = arqC.read()
 arqC.close()
-arqD = open('d.py','w')
+arqD = open('d.ij','w')
 
 texto2 = ""
 indice = 0
