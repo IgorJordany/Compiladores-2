@@ -11,10 +11,10 @@ def proxToken():
 		return False
 
 def S():
-	if token[2] == "program":
-		programa()
+	if programa():
+		print("Código valido")
+		return True
 	else:
-		print("----Erro-esperado-<programa>")
 		return False
 
 def programa():
@@ -34,10 +34,8 @@ def programa():
 						return True
 					else:
 						print("----Erro-esperado-.")
-						print(token)
 						return False
 				else:
-					print("----Errro-esperado-<corpo>")
 					return False
 			else:
 				print("----Erro-esperado-;")
@@ -64,13 +62,11 @@ def corpo():
 					print("----Erro-esperado-end")
 					return False
 			else:
-				print("----Erro-esperado-<comandos>")
 				return False
 		else:
 			print("----Erro-esperado-begin")
 			return False
 	else:
-		print("----Erro-esperado-<dc>")
 		return False
 
 def dc():
@@ -80,17 +76,14 @@ def dc():
 		if mais_dc():
 			return True
 		else:
-			print("----Erro-esperado-<mais_dc>")
 			return False
 	elif token[2] == "procedure":
 		dc_p()
 		if mais_dc():
 			return True
 		else:
-			print("----Erro-esperado-<mais_dc>11")
 			return False
 	else:
-		print("----OK-<dc>-vazio")
 		return True
 
 def mais_dc():
@@ -101,10 +94,8 @@ def mais_dc():
 		if dc():
 			return True
 		else:
-			print("----Erro-esperado-<dc>")
 			return False
 	else:
-		print("----OK-<mais_dc>-vazio")
 		return True
 
 def dc_v():
@@ -120,13 +111,11 @@ def dc_v():
 				if token[2] == "real" or token[2] == "integer":
 					tipo_var()
 				else:
-					print("----Erro-esperado-<tipo_var>")
 					return False
 			else:
 				print("----Erro-esperado-:")
 				return False
 		else:
-			print("----Erro-esperado-<variaveis>")
 			return False
 	else:
 		print("----Erro-esperado-var")
@@ -154,7 +143,6 @@ def variaveis():
 		if token[2] == ",":
 			mais_var()
 		else:
-			print("----OK-<mais_var>-vazio")
 			return True
 	else:
 		print("----Erro-esperado-identificador")
@@ -168,10 +156,8 @@ def mais_var():
 		if token[1] == "identificador":
 			variaveis()
 		else:
-			print("----Erro-esperado-<variaveis>")
 			return False
 	else:
-		print("----OK-<mais_var>-vazio")
 		return True
 
 def dc_p():
@@ -186,10 +172,8 @@ def dc_p():
 				if corpo_p():
 					return True
 				else:
-					print("----Erro-esperado-<corpo_p>")
 					return False
 			else:
-				print("----Erro-esperado-<parametros>")
 				return False
 		else:
 			print("----Erro-esperado-identificador")
@@ -212,10 +196,8 @@ def parametros():
 				print("----Erro-esperado-)")
 				return False
 		else:
-			print("----Erro-esperado-<lista_par>")
 			return False
 	else:
-		print("----OK-<parametros>-vazio")
 		return True
 
 def lista_par():
@@ -231,16 +213,13 @@ def lista_par():
 					mais_par()
 					return True
 				else:
-					print("----OK-<mais_par>-vazio")
 					return True
 			else:
-				print("----Erro-esperado-<tipo_var>")
 				return False
 		else:
 			print("----Erro-esperado-:")
 			return False
 	else:
-		print("----Erro-esperado-<variaveis>")
 		return False
 
 def mais_par():
@@ -251,10 +230,8 @@ def mais_par():
 		if lista_par():
 			return True
 		else:
-			print("----Erro-esperado-<lista_par>")
 			return False
 	else:
-		print("----OK-<mais_par>-vazio")
 		return True
 
 def corpo_p():
@@ -272,13 +249,11 @@ def corpo_p():
 					print("----Erro-esperado-end")
 					return False
 			else:
-				print("----Erro-esperado-<comandos>")
 				return False
 		else:
 			print("----Erro-esperado-begin")
 			return False
 	else:
-		print("----Erro-esperado-<corpo_p>")
 		return False
 
 def dc_loc():
@@ -289,10 +264,8 @@ def dc_loc():
 			mais_dcloc()
 			return True
 		else:
-			print("----Erro-esperado-<mais_dcloc>")
 			return False
 	else:
-		print("----OK-<dc_loc>-vazio")
 		return True
 
 def mais_dcloc():
@@ -303,10 +276,9 @@ def mais_dcloc():
 		if dc_loc():
 			return True
 		else:
-			print("----Erro-esperado-<dc_loc>")
 			return False
 	else:
-		print("----OK-<mais_dcloc>-vazio")
+		return True
 
 def lista_arg():
 	global token
@@ -323,10 +295,8 @@ def lista_arg():
 				print("----Erro-esperado-)")
 				return False
 		else:
-			print("----Erro-esperado-<argumentos>")
 			return False
 	else:
-		print("----OK-<lista_arg>-vazio")
 		return True
 
 def argumentos():
@@ -337,7 +307,6 @@ def argumentos():
 		if mais_ident():
 			return True
 		else:
-			print("----Erro-esperado-<mais_ident>")
 			return False
 	else:
 		print("----Erro-esperado-identificador")
@@ -352,10 +321,8 @@ def mais_ident():
 			argumentos()
 			return True
 		else:
-			print("----Erro-esperado-<argumentos>")
 			return False
 	else:
-		print("----OK-<mais_ident>-vazio")
 		return True
 
 def pfalsa():
@@ -366,10 +333,8 @@ def pfalsa():
 		if argumentos():
 			return True
 		else:
-			print("----Erro-esperado-<argumentos>")
 			return False
 	else:
-		print("----OK-<pfalsa>-vazio")
 		return True
 
 def comandos():
@@ -380,10 +345,8 @@ def comandos():
 			mais_comandos()
 			return True
 		else:
-			print("----OK-<mais_comandos>-vazio")
 			return True
 	else:
-		print("----OK-<comandos>-vazio")
 		return True
 
 def mais_comandos():
@@ -394,10 +357,8 @@ def mais_comandos():
 		if comandos():
 			return True
 		else:
-			print("----Erro-esperado-<comandos>")
 			return False
 	else:
-		print("----OK-<mais_comandos>-vazio")
 		return True
 
 def comando():
@@ -418,7 +379,6 @@ def comando():
 					print("----Erro-esperado-)")
 					return False
 			else:
-				print("----Erro-esperado-<variaveis>")
 				return False
 		else:
 			print("----Erro-esperado-(")
@@ -439,7 +399,6 @@ def comando():
 					print("----Erro-esperado-)")
 					return False
 			else:
-				print("----Erro-esperado-<variaveis>")
 				return False
 		else:
 			print("----Erro-esperado-(")
@@ -466,7 +425,6 @@ def comando():
 								print("----Erro-esperado-$")
 								return False
 						else:
-							print("----Erro-esperado-<comandos>")
 							return False
 					else:
 						print("----Erro-esperado-do")
@@ -475,7 +433,6 @@ def comando():
 					print("----Erro-esperado-)")
 					return False
 			else:
-				print("----Erro-esperado-<condicao>")
 				return False
 		else:
 			print("----Erro-esperado-(")
@@ -503,10 +460,8 @@ def comando():
 									print("----Erro-esperado-$")
 									return False
 							else:
-								print("----Erro-esperado-<pfalsa>")
 								return False
 						else:
-							print("----Erro-esperado-<pfalsa>")
 							return False
 					else:
 						print("----Erro-esperado-then")
@@ -515,7 +470,6 @@ def comando():
 					print("----Erro-esperado-)")
 					return False
 			else:
-				print("----Erro-esperado-<condicao>")
 				return False
 		else:
 			print("----Erro-esperado-(")
@@ -526,7 +480,6 @@ def comando():
 		if restoIdent():
 			return True
 		else:
-			print("----Erro-esperado-<restoIdent>")
 			return False
 	else:
 		print("---Erro-esperado-read-ou-write-ou-while-ou-if-ou-ident")
@@ -540,13 +493,11 @@ def restoIdent():
 		if expressao():
 			return True
 		else:
-			print("---Erro-esperado-<expressao>")
 			return False
 	elif token[2] == "(":
 		lista_arg()
 		return True
 	else:
-		print("----Erro-esperado-:=-ou-<lista_arg>")
 		return False
 
 def condicao():
@@ -557,13 +508,10 @@ def condicao():
 			if expressao():
 				return True
 			else:
-				print("----Erro-esperado-<expressao>")
 				return False
 		else:
-			print("----Erro-esperado-<relacao>")
 			return False
 	else:
-		print("----Erro-esperado-<expressao>")
 		return False
 
 def relacao():
@@ -603,10 +551,8 @@ def expressao():
 		if outros_termos():
 			return True
 		else:
-			print("----Erro-esperado-<outros_termos>")
 			return False
 	else:
-		print("----Erro-esperado-<termo>")
 		return False
 
 def op_un():
@@ -620,7 +566,6 @@ def op_un():
 		token = proxToken()
 		return True
 	else:
-		print("----OK-<op_un>-vazio")
 		return True
 
 def outros_termos():
@@ -631,13 +576,10 @@ def outros_termos():
 			if outros_termos():
 				return True
 			else:
-				print("----Erro-esperado-<outros_termos>")
 				return False
 		else:
-			print("----Erro-esperado-<termo>")
 			return False
 	else:
-		print("----OK-<outros_termos>-vazio")
 		return True
 
 def op_ad():
@@ -661,13 +603,10 @@ def termo():
 			if mais_fatores():
 				return True
 			else:
-				print("----OK-<mais_fatores>-vazio")
 				return True
 		else:
-			print("----Erro-esperado-<fator>")
 			return False
 	else:
-		print("----Erro-esperado-<op_un>")
 		return False
 
 def mais_fatores():
@@ -678,13 +617,10 @@ def mais_fatores():
 			if mais_fatores():
 				return True
 			else:
-				print("----Erro-esperado-<mais_fatores>")
 				return False
 		else:
-			print("----Erro-esperado-<fator>")
 			return False
 	else:
-		print("----OK-<op_mul>-vazio")
 		return True
 
 def op_mul():
@@ -727,7 +663,6 @@ def fator():
 				print("----Erro-esperado-)")
 				return False
 		else:
-			print("----Erro-esperado-<expressao>")
 			return False
 	else:
 		print("----Erro-esperado-identificador-ou-<numero_int>-ou-<numero_real>-ou-(")
