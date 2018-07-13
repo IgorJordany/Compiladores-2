@@ -116,6 +116,7 @@ def dc_v():
 				print("----Erro-esperado-:")
 				return False
 		else:
+			print("----Erro-esperado-identificador")
 			return False
 	else:
 		print("----Erro-esperado-var")
@@ -347,7 +348,7 @@ def comandos():
 		else:
 			return True
 	else:
-		return True
+		return False
 
 def mais_comandos():
 	global token
