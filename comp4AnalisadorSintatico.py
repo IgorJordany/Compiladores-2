@@ -16,7 +16,8 @@ def S():
 		print("Código valido")
 		return True
 	else:
-		print("essa porra ta uma porra")
+		print(token[2])
+		print("Erro sintatico")
 		return False
 
 def programa():
@@ -384,7 +385,7 @@ def pfalsa():
 
 def comandos():
 	global token
-	if token[2] == "read" or token[2] == "write" or token[2] == "while" or token[2] == "if" or token[1] == "identificador":
+	if token[2] == "read" or token[2] == "write" or token[2] == "while" or token[2] == "if" or token[1] == "identificador" or token[2] == "$":
 		r = comando()
 		if r:
 			if token[2] == ";":
@@ -545,6 +546,8 @@ def comando():
 			return True
 		else:
 			return False
+	elif token[2] == "$":
+		return True
 	else:
 		print("---Erro-esperado-read-ou-write-ou-while-ou-if-ou-ident")
 		return False

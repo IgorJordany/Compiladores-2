@@ -16,7 +16,7 @@ begin
     while (a1>0)do
         write(a1);
         a1:=a1-1
-    ;
+    $;
     while (b <> 10) do
         b:=b+2;
         a:=a-1;
