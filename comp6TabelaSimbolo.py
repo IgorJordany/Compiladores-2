@@ -16,7 +16,6 @@ def S():
 		print("Código valido")
 		return True
 	else:
-		print(token[2])
 		print("Erro sintatico")
 		return False
 
@@ -149,12 +148,26 @@ def dc_v():
 
 def tipo_var():
 	global token
+	global listaux
+	global parametro
+	if parametro:
+		cat = "parametro"
+	else:
+		cat = "var"
 	if token[2] == "real":
 		print("----OK-tipo-real")
+		r = insereTabela(listaux,cat,token[2])
+		listaux = []
+		if not r:
+			return False
 		token = proxToken()
 		return True
 	elif token[2] == "integer":
 		print("----OK-tipo-inteiro")
+		r = insereTabela(listaux,cat,token[2])
+		listaux = []
+		if not r:
+			return False
 		token = proxToken()
 		return True
 	else:
@@ -163,8 +176,10 @@ def tipo_var():
 
 def variaveis():
 	global token
+	global listaux
 	if token[1] == "identificador":
 		print("----OK-identificador")
+		listaux.append(token[2])
 		token = proxToken()
 		if token[2] == ",":
 			r = mais_var()
@@ -196,15 +211,20 @@ def mais_var():
 
 def dc_p():
 	global token
+	global procedimento
+	global nomep
 	if token[2] == "procedure":
 		print("----OK-procedure")
 		token = proxToken()
+		procedimento = True
 		if token[1] == "identificador":
+			nomep = token[2]
 			print("----OK-identificador")
 			token = proxToken()
 			r = parametros()
 			if r:
 				r = corpo_p()
+				procedimento = False
 				if r:
 					return True
 				else:
@@ -220,10 +240,13 @@ def dc_p():
 
 def parametros():
 	global token
+	global parametro
 	if token[2] == "(":
 		print("----OK-(")
 		token = proxToken()
+		parametro = True
 		r = lista_par()
+		parametro = False
 		if r:
 			if token[2] == ")":
 				print("----OK-)")
@@ -748,5 +771,58 @@ def fator():
 		print("----Erro-esperado-identificador-ou-<numero_int>-ou-<numero_real>-ou-(")
 		return False
 
+def buscaTabela(lex):
+	global tabelaglobal
+	global procedimento
+	if procedimento:
+		lex2 = lex
+		lex2[2] = "parametro"
+		if parametro:
+			if lex in tabelaglobal:
+				return True
+			else:
+				return False
+		else:
+			if lex in tabelaglobal:
+				return True
+			elif lex2 in tabelaglobal:
+				return True
+			else:
+				return False
+	else:
+		for lista in tabelaglobal:
+			if lex in lista:
+				print(lex)
+				return True
+			else:
+				return False
+
+def insereTabela(listaux,cat,tipo):
+	global tabelaglobal
+	global nomep
+	print(listaux)
+	if procedimento:
+		for lex in listaux:
+			if not buscaTabela([nomep,lex,cat,tipo]):
+				tabelaglobal.append([nomep,lex,cat,tipo])
+				print(tabelaglobal)
+			else:
+				print("----Erro-variavel-já-declarada")
+				return False
+	else:
+		for lex in listaux:
+			if not buscaTabela(lex):
+				tabelaglobal.append(["global",lex,cat,tipo])
+				print(tabelaglobal)
+			else:
+				print("----Erro-variavel-já-declarada")
+				return False
+	return True
+
 token = proxToken()
+tabelaglobal = []
+parametro = False
+procedimento = False
+nomep = ""
+listaux = []
 S()
