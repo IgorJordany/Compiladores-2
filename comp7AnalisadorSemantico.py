@@ -182,6 +182,7 @@ def variaveis():
 		print("----OK-identificador")
 		if read:
 			buscaEscopo()
+			token = proxToken()
 		else:
 			listaux.append(token[2])
 			token = proxToken()
@@ -375,6 +376,7 @@ def argumentos():
 	if token[1] == "identificador":
 		print("----OK-identificador")
 		buscaEscopo()
+		token = proxToken()
 		r = mais_ident()
 		if r:
 			return True
@@ -442,6 +444,7 @@ def mais_comandos():
 		return True
 
 def comando():
+	global tipo
 	global token
 	global read
 	if token[2] == "read":
@@ -573,6 +576,8 @@ def comando():
 	elif token[1] == "identificador":
 		print("----OK-identificador")
 		buscaEscopo()
+		tipo = buscaEscopor()
+		token = proxToken()
 		r = restoIdent()
 		if r:
 			return True
@@ -586,10 +591,13 @@ def comando():
 
 def restoIdent():
 	global token
+	global exp
 	if token[2] == ":=":
 		print("----OK-:=")
+		exp = True
 		token = proxToken()
 		r = expressao()
+		exp = False
 		if r:
 			return True
 		else:
@@ -750,21 +758,51 @@ def op_mul():
 
 def fator():
 	global token
+	global exp
+	global tipo
 	if token[1] == "identificador":
 		print("----OK-identificador")
 		r = buscaEscopo()
 		if r:
-			return True
+			if exp:
+				tipo2 = buscaEscopor()
+				if tipo == tipo2:
+					token = proxToken()
+					return True
+				else:
+					print("----Erro-operacao-com-tipos-diferentes")
+					return False
+			else:
+				token = proxToken()
+				return True
 		else:
 			return False
 	elif token[1] == "nInteger":
 		print("----OK-número-inteiro")
-		token = proxToken()
-		return True
+		if exp:
+			if tipo == "integer":
+				token = proxToken()
+				return True
+			else:
+				print("----Erro-operacao-com-tipos-diferentes")
+				print(tipo)
+				return False
+		else:
+			token = proxToken()
+			return True
 	elif token[1] == "nReal":
 		print("----OK-número-real")
-		token = proxToken()
-		return True
+		if exp:
+			if tipo == "real":
+				token = proxToken()
+				return True
+			else:
+				print("----Erro-operacao-com-tipos-diferentes")
+				print(tipo)
+				return False
+		else:
+			token = proxToken()
+			return True
 	elif token[2] == "(":
 		print("----OK-(")
 		token = proxToken()
@@ -807,17 +845,39 @@ def buscaLocal(lex,proc):
 					return False
 	return True
 
+def buscaGlobalr(lex):
+	global tabelaglobal
+	if tabelaglobal == []:
+		return True
+	for lista in tabelaglobal:
+		if not lex in lista:
+			pass
+		else:
+			return lista[2]
+	return True
+
+def buscaLocalr(lex,proc):
+	global tabelaglobal
+	global indice
+	for lista in tabelaglobal:
+		if proc in lista:
+			indice = tabelaglobal.index(lista)
+			for l in lista[2]:
+				if not lex in l:
+					pass
+				else:
+					return l[2]
+	return True
+
 def buscaEscopo():
 	global procedimento
 	global token
 	if procedimento:
 		if not buscaLocal(token[2],nomep):
 			print("----OK-variavel-esta-no-escopo-local")
-			token = proxToken()
 			return True
 		elif not buscaGlobal(token[2]):
 			print("----OK-variavel-esta-no-escopo-global")
-			token = proxToken()
 			return True
 		else:
 			print("----Erro-variavel-em-escopo-errado-ou-nao-declarada")
@@ -825,11 +885,22 @@ def buscaEscopo():
 	else:
 		if not buscaGlobal(token[2]):
 			print("----OK-variavel-esta-no-escopo-global")
-			token = proxToken()
 			return True
 		else:
 			print("----Erro-variavel-em-escopo-errado-ou-nao-declarada")
 			return False
+
+def buscaEscopor():
+	global procedimento
+	global token
+	if procedimento:
+		if buscaLocalr(token[2],nomep):
+			return buscaLocalr(token[2],nomep)
+		elif buscaGlobalr(token[2]):
+			return buscaGlobalr(token[2])
+	else:
+		if buscaGlobalr(token[2]):
+			return buscaGlobalr(token[2])
 
 def insereTabela(listaux,cat,tipo):
 	global tabelaglobal
@@ -871,6 +942,7 @@ tabelalocal = []
 parametro = False
 procedimento = False
 read = False
+exp = False
 nomep = ""
 listaux = []
 S()
