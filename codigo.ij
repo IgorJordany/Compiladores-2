@@ -1,7 +1,7 @@
 program programa1;
 {1 exemplo de programa}
-var a, a1, b, c: integer;
-var i, j: real;
+var a, a1, c: integer;
+var i, j, b: real;
 procedure soma(h:integer; b:real)
 /* esta eh uma subrotina *** */
 	var d : integer;
@@ -28,10 +28,10 @@ begin
         a1:=a1-1
     $;
     while (b <> 10) do
-        b:=b+2;
+        b:=b+2.3;
         a:=a-1;
-        c:=b+1;
-		
+        c:=a+1;
     $;
-    soma(a1;b)
+    soma(a1;b);
+	sub(c;j)
 end.

@@ -16,7 +16,6 @@ def S():
 		print("Código valido")
 		return True
 	else:
-		print("Erro sintatico")
 		return False
 
 def programa():
@@ -354,6 +353,8 @@ def mais_dcloc():
 
 def lista_arg():
 	global token
+	global proced
+	global listatipos
 	if token[2] == "(":
 		print("----OK-(")
 		token = proxToken()
@@ -362,7 +363,15 @@ def lista_arg():
 			if token[2] == ")":
 				print("----OK-)")
 				token = proxToken()
-				return True
+				print(listatipos)
+				print(buscaParametros(proced))
+				if buscaParametros(proced) == listatipos:
+					listatipos = []
+					return True
+				else:
+					print("----Erro-entrada-de-parametros-incorreta")
+					listatipos = []
+					return False
 			else:
 				print("----Erro-esperado-)")
 				return False
@@ -373,9 +382,11 @@ def lista_arg():
 
 def argumentos():
 	global token
+	global listatipos
 	if token[1] == "identificador":
 		print("----OK-identificador")
 		buscaEscopo()
+		listatipos.append(buscaEscopor())
 		token = proxToken()
 		r = mais_ident()
 		if r:
@@ -447,6 +458,7 @@ def comando():
 	global tipo
 	global token
 	global read
+	global proced
 	if token[2] == "read":
 		read = True
 		print("----OK-read")
@@ -577,6 +589,7 @@ def comando():
 		print("----OK-identificador")
 		buscaEscopo()
 		tipo = buscaEscopor()
+		proced = token[2]
 		token = proxToken()
 		r = restoIdent()
 		if r:
@@ -603,8 +616,11 @@ def restoIdent():
 		else:
 			return False
 	elif token[2] == "(":
-		lista_arg()
-		return True
+		r = lista_arg()
+		if r:
+			return True
+		else:
+			return False
 	else:
 		return False
 
@@ -785,7 +801,6 @@ def fator():
 				return True
 			else:
 				print("----Erro-operacao-com-tipos-diferentes")
-				print(tipo)
 				return False
 		else:
 			token = proxToken()
@@ -798,7 +813,6 @@ def fator():
 				return True
 			else:
 				print("----Erro-operacao-com-tipos-diferentes")
-				print(tipo)
 				return False
 		else:
 			token = proxToken()
@@ -867,6 +881,20 @@ def buscaLocalr(lex,proc):
 					pass
 				else:
 					return l[2]
+	return True
+
+def buscaParametros(proc):
+	global tabelaglobal
+	global indice
+	listaloka = []
+	lex = "parametro"
+	for lista in tabelaglobal:
+		if proc in lista:
+			indice = tabelaglobal.index(lista)
+			for l in lista[2]:
+				if lex in l:
+					listaloka.append(l[2])
+			return listaloka
 	return True
 
 def buscaEscopo():
@@ -945,5 +973,6 @@ read = False
 exp = False
 nomep = ""
 listaux = []
+listatipos = []
 S()
 print(tabelaglobal)
